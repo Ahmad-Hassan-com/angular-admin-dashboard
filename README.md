@@ -1,5 +1,7 @@
 # Pulse Admin: Angular Admin Dashboard
 
+**Live demo: https://pulse-admin-inky.vercel.app**. Sign in as `admin@demo.com` / `admin123` or `user@demo.com` / `user123`.
+
 A responsive admin dashboard built with **Angular 22**, **Angular Material (M3)**, **RxJS** and **Chart.js**, backed by a small Express mock API that issues real signed JWTs.
 
 ## Features
