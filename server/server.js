@@ -1,5 +1,6 @@
 // Mock REST API with real JWT auth (bcrypt passwords, signed tokens, role claims).
 // Data lives in server/db.json and is generated on first run by seed.js.
+// On serverless hosts (Vercel) the filesystem is read-only, so data is kept in memory instead.
 const fs = require('node:fs');
 const path = require('node:path');
 const express = require('express');
@@ -13,12 +14,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-secret-change-me';
 const TOKEN_TTL = '2h';
 const DB_FILE = path.join(__dirname, 'db.json');
 
-if (!fs.existsSync(DB_FILE)) {
+const PERSIST = !process.env.VERCEL;
+
+if (PERSIST && !fs.existsSync(DB_FILE)) {
   fs.writeFileSync(DB_FILE, JSON.stringify(seed(), null, 2));
   console.log('Seeded server/db.json');
 }
-const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-const save = () => fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+const db = PERSIST ? JSON.parse(fs.readFileSync(DB_FILE, 'utf8')) : seed();
+const save = () => PERSIST && fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
 
 const toPublic = ({ passwordHash, ...user }) => user;
 const sign = (user) =>
@@ -175,7 +178,11 @@ if (fs.existsSync(DIST)) {
   app.get('/{*path}', (req, res) => res.set('Cache-Control', 'no-cache').sendFile(path.join(DIST, 'index.html')));
 }
 
-app.listen(PORT, () => {
-  console.log(`API ready on http://localhost:${PORT}/api`);
-  console.log('Demo accounts: admin@demo.com / admin123, user@demo.com / user123');
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`API ready on http://localhost:${PORT}/api`);
+    console.log('Demo accounts: admin@demo.com / admin123, user@demo.com / user123');
+  });
+}
+
+module.exports = app;
