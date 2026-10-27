@@ -1,0 +1,79 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Hello, {{ auth.user()?.name?.split(' ')?.[0] }}</h1>
+      <p>Here's how sales are tracking this year.</p>
+    </div>
+  </header>
+
+  @if (!loaded()) {
+    <div class="center"><mat-spinner diameter="40" /></div>
+  } @else if (data(); as d) {
+    <section class="kpis" aria-label="Key metrics">
+      <article class="panel kpi">
+        <span class="kpi-label"><mat-icon>payments</mat-icon> Revenue (YTD)</span>
+        <strong class="kpi-value">{{ d.stats.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+        <span class="chip" [class.good]="d.stats.revenueChange >= 0" [class.critical]="d.stats.revenueChange < 0">
+          <mat-icon>{{ d.stats.revenueChange >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+          {{ d.stats.revenueChange | percent: '1.1-1' }} vs last year
+        </span>
+      </article>
+      <article class="panel kpi">
+        <span class="kpi-label"><mat-icon>shopping_cart</mat-icon> Orders</span>
+        <strong class="kpi-value">{{ d.stats.orders | number }}</strong>
+        <span class="muted">Across 12 months</span>
+      </article>
+      <article class="panel kpi">
+        <span class="kpi-label"><mat-icon>receipt_long</mat-icon> Avg. order value</span>
+        <strong class="kpi-value">{{ avgOrderValue() | currency: 'USD' : 'symbol' : '1.2-2' }}</strong>
+        <span class="muted">Revenue ÷ orders</span>
+      </article>
+      <article class="panel kpi">
+        <span class="kpi-label"><mat-icon>group</mat-icon> Active users</span>
+        <strong class="kpi-value">{{ d.stats.activeUsers | number }}</strong>
+        <span class="muted">of {{ d.stats.totalUsers | number }} registered</span>
+      </article>
+    </section>
+
+    <section class="charts">
+      <article class="panel wide">
+        <h2>Monthly revenue</h2>
+        <p class="panel-subtitle">This year compared with last year</p>
+        <app-chart [build]="revenueChart()" label="Line chart of monthly revenue, this year versus last year" [height]="300" />
+        <details>
+          <summary>Show data table</summary>
+          <table>
+            <thead><tr><th>Month</th><th>This year</th><th>Last year</th><th>Orders</th></tr></thead>
+            <tbody>
+              @for (m of d.sales.monthly; track m.month) {
+                <tr>
+                  <td>{{ m.month }}</td>
+                  <td>{{ m.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+                  <td>{{ m.previousRevenue | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+                  <td>{{ m.orders | number }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </details>
+      </article>
+
+      <article class="panel">
+        <h2>Revenue by category</h2>
+        <p class="panel-subtitle">Year to date</p>
+        <app-chart [build]="categoryChart()" label="Bar chart of revenue by product category" />
+      </article>
+
+      <article class="panel">
+        <h2>Revenue by region</h2>
+        <p class="panel-subtitle">Year to date</p>
+        <app-chart [build]="regionChart()" label="Horizontal bar chart of revenue by region" />
+      </article>
+    </section>
+  } @else {
+    <div class="panel center">
+      <mat-icon>cloud_off</mat-icon>
+      <p>Couldn't load dashboard data.</p>
+    </div>
+  }
+</div>

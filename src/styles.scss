@@ -1,0 +1,223 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$violet-palette,
+        theme-type: color-scheme,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  // Chart colors (validated categorical slots 1-2, light and dark steps).
+  --chart-series-1: #2a78d6;
+  --chart-series-2: #eb6834;
+  --chart-text: #52514e;
+  --chart-grid: rgba(11, 11, 11, 0.08);
+
+  --status-good: #1b7f3b;
+  --status-warning: #9a6200;
+  --status-critical: #c62828;
+}
+
+html.dark-theme {
+  color-scheme: dark;
+  --chart-series-1: #3987e5;
+  --chart-series-2: #d95926;
+  --chart-text: #c3c2b7;
+  --chart-grid: rgba(240, 239, 236, 0.1);
+
+  --status-good: #6fcf8b;
+  --status-warning: #f0b450;
+  --status-critical: #ff8a80;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface);
+}
+
+a:not([mat-button], [mat-flat-button], [mat-stroked-button], [mat-list-item], [mat-menu-item]) {
+  color: var(--mat-sys-primary);
+}
+
+// ---------- Shared page building blocks ----------
+.page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 599px) {
+    padding: 16px;
+  }
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+
+  h1 {
+    font: var(--mat-sys-headline-small);
+    margin: 0;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.panel {
+  background: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+
+  h2 {
+    font: var(--mat-sys-title-medium);
+    margin: 0 0 4px;
+  }
+
+  .panel-subtitle {
+    margin: 0 0 16px;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font: var(--mat-sys-label-medium);
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.good { color: var(--status-good); }
+  &.warning { color: var(--status-warning); }
+  &.critical { color: var(--status-critical); }
+  &.admin {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+// ---------- Auth pages ----------
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+  position: relative;
+
+  .theme-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--mat-sys-surface);
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 24px;
+    padding: 32px;
+    box-sizing: border-box;
+
+    @media (max-width: 599px) {
+      padding: 24px 20px;
+    }
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mat-sys-primary);
+    font: var(--mat-sys-title-medium);
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font: var(--mat-sys-headline-small);
+    margin: 0 0 4px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+
+  .form-error {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+    margin-bottom: 12px;
+  }
+
+  .submit {
+    height: 48px;
+    margin-top: 8px;
+  }
+
+  .switch {
+    text-align: center;
+    margin: 20px 0 0;
+  }
+
+  .demo {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}

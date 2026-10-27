@@ -1,0 +1,88 @@
+<mat-sidenav-container class="container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    [mode]="isHandset() ? 'over' : 'side'"
+    [opened]="!isHandset()"
+    [attr.role]="isHandset() ? 'dialog' : 'navigation'"
+  >
+    <div class="brand">
+      <mat-icon>insights</mat-icon>
+      <span>Pulse Admin</span>
+    </div>
+
+    <mat-nav-list>
+      @for (item of nav(); track item.path) {
+        <a
+          mat-list-item
+          [routerLink]="item.path"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [activated]="rla.isActive"
+          (click)="isHandset() && drawer.close()"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="role-note">
+      <span class="chip" [class.admin]="auth.isAdmin()">
+        <mat-icon>{{ auth.isAdmin() ? 'shield' : 'person' }}</mat-icon>
+        {{ auth.isAdmin() ? 'Admin' : 'User' }} access
+      </span>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <mat-toolbar class="toolbar">
+      @if (isHandset()) {
+        <button mat-icon-button (click)="drawer.toggle()" aria-label="Toggle navigation">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      <span class="spacer"></span>
+
+      <button
+        mat-icon-button
+        (click)="theme.toggle()"
+        [matTooltip]="theme.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+        [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <mat-icon>{{ theme.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+
+      <button mat-button class="user-button" [matMenuTriggerFor]="userMenu">
+        <span class="avatar">{{ initials() }}</span>
+        <span class="user-name">{{ auth.user()?.name }}</span>
+        <mat-icon iconPositionEnd>expand_more</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu" xPosition="before">
+        <div class="menu-header">
+          <strong>{{ auth.user()?.name }}</strong>
+          <span class="muted">{{ auth.user()?.email }}</span>
+        </div>
+        <mat-divider />
+        <a mat-menu-item routerLink="/profile">
+          <mat-icon>account_circle</mat-icon>
+          <span>Profile</span>
+        </a>
+        <button mat-menu-item (click)="auth.logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sign out</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <div class="progress">
+      @if (loading.isLoading()) {
+        <mat-progress-bar mode="indeterminate" />
+      }
+    </div>
+
+    <main>
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

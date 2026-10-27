@@ -1,0 +1,14 @@
+# Render Blueprint: one free Node web service that serves the Angular build and the API.
+services:
+  - type: web
+    name: pulse-admin
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run serve:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: JWT_SECRET
+        generateValue: true

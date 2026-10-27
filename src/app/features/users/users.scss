@@ -1,0 +1,64 @@
+.table-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+
+  mat-form-field {
+    width: 160px;
+  }
+
+  .search {
+    flex: 1 1 260px;
+  }
+
+  @media (max-width: 599px) {
+    mat-form-field {
+      flex: 1 1 100%;
+    }
+  }
+}
+
+.table-wrap {
+  position: relative;
+  overflow-x: auto;
+}
+
+.table-progress {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+}
+
+table {
+  width: 100%;
+  min-width: 860px;
+  background: transparent;
+}
+
+.user-cell {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.actions-cell {
+  width: 56px;
+  text-align: right;
+}
+
+.chip {
+  text-transform: capitalize;
+}
+
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
